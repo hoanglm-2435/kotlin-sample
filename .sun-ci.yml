@@ -2,17 +2,34 @@ default:
   workspace: shared
 
 stages:
-- Install
+- test
+- release
 
 jobs:
-- name: Fastlane Install
-  stage: Install
-  image: ruby:latest
-  before_script:
-  - gem install bundler
-  - bundle install
-  script: 
-  - echo "Test CI"
-  - ruby --version
-  - bundle exec fastlane test
-    
+# - name: detekt
+#   stage: test
+#   image: 30121999/sunci-detekt:latest
+#   script:
+#   - java -jar /usr/local/bin/detekt-cli-all.jar --all-rules
+
+# - name: coverage
+#   stage: test
+#   image: gradle:6.6.1-jdk11
+#   script:
+#     - gradle jacocoTestReport
+#   coverage:
+#     type: jacoco
+#     path: coverage.xml
+#   artifacts:
+#     paths:
+#     - coverage
+#     expires_in: 3 days
+
+- name: realease apk
+  stage: release
+  image: 30121999/sunci-fastlane-firebase:latest
+  script:
+  - fastlane add_plugin firebase_app_distribution
+  - export GOOGLE_APPLICATION_CREDENTIALS=./firebase-admin-sdk-key.json
+  - firebase projects:list
+  - fastlane releaseApkByFirebase

@@ -11,7 +11,8 @@
 #
 
 # Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
+update_fastlane
+opt_out_usage
 
 default_platform(:android)
 
@@ -35,4 +36,16 @@ platform :android do
     gradle(task: "clean assembleRelease")
     upload_to_play_store
   end
+
+  desc "upload to Beta by FireBase"
+  lane :releaseApkByFirebase do
+  firebase_app_distribution(
+    app: "1:21101997881:android:e89e3e098342fed6a8c2e8",
+    testers: “le.minh.hoang@sun-asterisk.com”,
+    groups: “SunCI”,
+    release_notes: "Version Staging",
+    firebase_cli_path: "/usr/local/bin/firebase",
+    service_credentials_file: './firebase-admin-sdk-key.json'
+    )
+end
 end

@@ -7,6 +7,16 @@ buildscript {
     }
 }
 
+// detekt {
+//     config = files("$rootDir/config/detekt/detekt.yml")
+//     input = files("src/main/java", "src/main/kotlin")  
+//     reports {
+//         html.enabled = true // observe findings in your browser with structure and code snippets
+//         xml.enabled = false // checkstyle like format mainly for integrations like Jenkins
+//         txt.enabled = false // similar to the console output, contains issue signature to manually edit baseline files
+//     }
+// }
+
 plugins {
     id("application")
     id("com.diffplug.spotless") version "5.12.4"
@@ -14,6 +24,21 @@ plugins {
     id("org.seasar.doma.compile") version "1.1.0"
     kotlin("jvm") version "1.4.0"
     kotlin("kapt") version "1.4.0"
+    id("io.gitlab.arturbosch.detekt").version("1.9.1")
+    jacoco
+}
+
+jacoco {
+    toolVersion = "0.8.1"
+    reportsDir = file("${project.rootDir}/coverage/")
+}
+
+jacocoTestReport {
+    reports {
+        xml.isEnabled = false
+        csv.isEnabled = false
+        html.destination = file("${buildDir}/jacocoHtml")
+    }
 }
 
 application {
@@ -64,7 +89,7 @@ domaCodeGen {
 }
 
 tasks {
-    val jvmTarget = "11"
+    val jvmTarget = "1.8"
 
     compileKotlin {
         kotlinOptions.jvmTarget = jvmTarget
